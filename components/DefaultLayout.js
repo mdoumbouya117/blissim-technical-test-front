@@ -1,31 +1,19 @@
-import Header from './header/Header'
-import Footer from './footer/Footer'
-import withStyles from '@mui/styles/withStyles';
+import Header from "./header/Header";
+import Footer from "./footer/Footer";
+import { styled } from "@mui/material/styles";
 
-// ===== Basic Layout ===== //
-const useStyles = () => ({
-    root: {
-        minHeight: "100vh",
-    },
+const Root = styled("div")({
+  minHeight: "100vh",
 });
 
-const  DefaultLayout = (props) => {
-    const {classes} = props
-    return (
-        
-            <div className={classes.root}>
+const DefaultLayout = ({ children }) => {
+  return (
+    <Root>
+      <Header />
+      <main>{children}</main>
+      <Footer />
+    </Root>
+  );
+};
 
-                {/*Header*/}
-                <Header/>
-
-                <main>
-                    {props.children}
-                </main>
-
-                {/*Footer*/}
-                <Footer/>
-            </div>
-    )
-}
-
-export default withStyles(useStyles)(DefaultLayout)
+export default DefaultLayout;

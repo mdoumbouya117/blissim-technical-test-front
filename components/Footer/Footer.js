@@ -1,24 +1,20 @@
-import { Typography } from '@mui/material';
+import { Typography } from "@mui/material";
+import { styled } from "@mui/material/styles";
 
-import withStyles from '@mui/styles/withStyles';
+const FooterRoot = styled("footer")(({ theme }) => ({
+  backgroundColor: theme.palette.background.paper,
+  padding: theme.spacing(6),
+}));
 
-const useStyles = theme => ({
-    footer: {
-        backgroundColor: theme.palette.background.paper,
-        padding: theme.spacing(6),
-    },
-});
-
-const Footer = props => {
-    const {classes} = props;
-
-    return (
-        <footer className={classes.footer}>
-            <Typography variant="body2" color="textSecondary" align="center">
-                {'Copyright © '}SuperSite{new Date().getFullYear()}{'.'}
-            </Typography>
-        </footer>
-    )
+const Footer = () => {
+  return (
+    <FooterRoot>
+      <Typography variant="body2" color="textSecondary" align="center">
+        {"Copyright © "}SuperSite{new Date().getFullYear()}
+        {"."}
+      </Typography>
+    </FooterRoot>
+  );
 };
 
-export default withStyles(useStyles)(Footer)
+export default Footer;

@@ -1,56 +1,63 @@
-import { AppBar, Toolbar, Typography, IconButton, Container } from '@mui/material';
-import withStyles from '@mui/styles/withStyles';
-import ShoppingBasketIcon from '@mui/icons-material/ShoppingBasket';
-import Link from 'next/link'
-import Interstitial from '../Interstitial'
-import {useContext, useState} from "react";
+import {
+  AppBar,
+  Toolbar,
+  Typography,
+  IconButton,
+  Container,
+} from "@mui/material";
+import { styled } from "@mui/material/styles";
+import ShoppingBasketIcon from "@mui/icons-material/ShoppingBasket";
+import Link from "next/link";
+import Interstitial from "../Interstitial";
+import { useContext } from "react";
 import GlobalContext from "../../state/global-context";
 
-const useStyles = theme => ({
-    toolbar: {
-        padding: 0,
-        display: "flex",
-        justifyContent: "space-between",
-    },
-    cartIcon: {
-        color: theme.palette.light,
-    }
+const StyledToolbar = styled(Toolbar)({
+  padding: 0,
+  display: "flex",
+  justifyContent: "space-between",
 });
 
-const Header = props => {
-    const {classes} = props
-    const context = useContext(GlobalContext);
+const StyledShoppingBasketIcon = styled(ShoppingBasketIcon)(({ theme }) => ({
+  color: theme.palette.light,
+}));
 
-    const toggleDrawer = (open) => (event) => {
-        if (event && event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
-            return;
-        }
-        context.pushObject('open_interstitial', true);
-    };
+const Header = () => {
+  const context = useContext(GlobalContext);
 
-    return (
-        <>
-            <header className={classes.root}>
-                <AppBar position="static" elevation={0}>
-                    <Container maxWidth="lg">
-                        <Toolbar className={classes.toolbar}>
-                            <Link href="/" passHref>
-                                <a>
-                                    <Typography variant="h4" className={classes.title}>
-                                        SuperShop
-                                    </Typography>
-                                </a>
-                            </Link>
-                            <IconButton onClick={toggleDrawer(!context.open_interstitial)} size="large">
-                                <ShoppingBasketIcon className={classes.cartIcon}/>
-                            </IconButton>
-                        </Toolbar>
-                    </Container>
-                </AppBar>
-            </header>
-            <Interstitial/>
-        </>
-    );
-}
+  const toggleDrawer = (open) => (event) => {
+    if (
+      event &&
+      event.type === "keydown" &&
+      (event.key === "Tab" || event.key === "Shift")
+    ) {
+      return;
+    }
+    context.pushObject("open_interstitial", true);
+  };
 
-export default withStyles(useStyles)(Header)
+  return (
+    <>
+      <header>
+        <AppBar position="static" elevation={0}>
+          <Container maxWidth="lg">
+            <StyledToolbar>
+              <Link href="/" passHref>
+                <Typography variant="h4">SuperShop</Typography>
+              </Link>
+              <IconButton
+                onClick={toggleDrawer(!context.open_interstitial)}
+                size="large"
+              >
+                <StyledShoppingBasketIcon />
+              </IconButton>
+            </StyledToolbar>
+          </Container>
+        </AppBar>
+      </header>
+      <Interstitial />
+    </>
+  );
+};
+
+export default Header;
