@@ -74,6 +74,7 @@ const Interstitial = () => {
         <ProductListContainer container alignItems="center">
           <Grid>
             <IconButton
+              aria-label="back"
               onClick={() => context.pushObject("open_interstitial", false)}
               size="large"
             >

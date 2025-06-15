@@ -9,6 +9,7 @@ import {
 import ShoppingBasketIcon from "@mui/icons-material/ShoppingBasket";
 import { useContext } from "react";
 import GlobalContext from "../../state/global-context";
+import WishlistButton from "../wishlist/WishlistButton";
 import { styled } from "@mui/material/styles";
 
 const Root = styled(Card)({
@@ -56,7 +57,7 @@ const ProductCard = ({ product }) => {
             component="img"
             alt={product.title}
             image={product.image}
-            title="Contemplative Reptile"
+            title={product.title}
           />
         </ThumbnailContainer>
         <Name gutterBottom component="h2">
@@ -65,14 +66,24 @@ const ProductCard = ({ product }) => {
         <Typography variant="body2" color="textSecondary" component="p">
           {product.desc}
         </Typography>
-        <Typography variant="body2" color="textSecondary" component="p">
-          {product.price}
+        <Typography
+          variant="body2"
+          color="textSecondary"
+          component="p"
+          aria-label={`Price: ${product.price} euros`}
+        >
+          {product.price} €
         </Typography>
       </Content>
       <CardActions>
-        <IconButton onClick={(e) => handleAddToCart(e, product)} size="large">
+        <IconButton
+          aria-label="shopping basket"
+          onClick={(e) => handleAddToCart(e, product)}
+          size="large"
+        >
           <ShoppingBasketIcon color="secondary" />
         </IconButton>
+        <WishlistButton product={product} />
       </CardActions>
     </Root>
   );
