@@ -10,8 +10,8 @@ const WishlistPage = () => {
   return (
     <Container maxWidth="md" sx={{ py: 4 }}>
       <Grid container justifyContent={"center"}>
-        <Typography variant="h3" component="h1" gutterBottom>
-          My Wishlist
+        <Typography variant="h3" component="h2" gutterBottom>
+          Wishlist
         </Typography>
       </Grid>
 

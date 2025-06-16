@@ -1,3 +1,5 @@
+import { useContext } from "react";
+import Link from "next/link";
 import {
   AppBar,
   Toolbar,
@@ -9,9 +11,8 @@ import Badge from "@mui/material/Badge";
 import { styled } from "@mui/material/styles";
 import ShoppingBasketIcon from "@mui/icons-material/ShoppingBasket";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
-import Link from "next/link";
+
 import Interstitial from "../Interstitial";
-import { useContext } from "react";
 import GlobalContext from "../../state/global-context";
 
 const StyledToolbar = styled(Toolbar)({
@@ -49,7 +50,9 @@ const Header = () => {
           <Container maxWidth="lg">
             <StyledToolbar>
               <Link href="/" passHref>
-                <Typography variant="h4">SuperShop</Typography>
+                <Typography variant="h4" component="h1">
+                  SuperShop
+                </Typography>
               </Link>
               <div>
                 <IconButton
