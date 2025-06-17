@@ -7,10 +7,10 @@ import {
   IconButton,
 } from "@mui/material";
 import ShoppingBasketIcon from "@mui/icons-material/ShoppingBasket";
-import { useContext } from "react";
-import GlobalContext from "../../state/global-context";
-import WishlistButton from "../wishlist/WishlistButton";
+import WishlistButton from "@/components/wishlist/WishlistButton";
 import { styled } from "@mui/material/styles";
+import { Product } from "@/types";
+import { useGlobalState } from "@/state/global-context";
 
 const Root = styled(Card)({
   height: "100%",
@@ -30,7 +30,8 @@ const ThumbnailContainer = styled("div")(({ theme }) => ({
 }));
 
 const Thumbnail = styled(CardMedia)({
-  maxHeight: "170px",
+  maxHeight: 170,
+  height: 140,
   width: "auto",
   margin: "auto",
 });
@@ -39,32 +40,26 @@ const Name = styled(Typography)({
   fontSize: "1rem",
 });
 
-const ProductCard = ({ product }) => {
-  const context = useContext(GlobalContext);
+const ProductCard = ({ product }: { product: Product }) => {
+  const { addProductToCart, pushObject } = useGlobalState();
 
-  const handleAddToCart = (e, product) => {
-    context.addProductToCart(
-      product,
-      context.pushObject("open_interstitial", true)
-    );
+  const handleAddToCart = (e: React.MouseEvent, product: Product) => {
+    e.preventDefault();
+    addProductToCart(product);
+    pushObject("open_interstitial", true);
   };
 
   return (
     <Root>
       <Content>
         <ThumbnailContainer>
-          <Thumbnail
-            component="img"
-            alt={product.title}
-            image={product.image}
-            title={product.title}
-          />
+          <Thumbnail image={product.image} title={product.title} />
         </ThumbnailContainer>
-        <Name gutterBottom component="h2">
+        <Name gutterBottom variant="h2">
           {product.title}
         </Name>
         <Typography variant="body2" color="textSecondary" component="p">
-          {product.desc}
+          {product.description}
         </Typography>
         <Typography
           variant="body2"
@@ -77,7 +72,7 @@ const ProductCard = ({ product }) => {
       </Content>
       <CardActions>
         <IconButton
-          aria-label="shopping basket"
+          aria-label="Add to cart"
           onClick={(e) => handleAddToCart(e, product)}
           size="large"
         >

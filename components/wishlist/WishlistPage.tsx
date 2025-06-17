@@ -1,11 +1,10 @@
 import { Container, Grid, Typography, Button } from "@mui/material";
-import { useContext } from "react";
 import Link from "next/link";
-import ProductCard from "../boutique/ProductCard";
-import GlobalContext from "../../state/global-context";
+import ProductCard from "@/components/boutique/ProductCard";
+import { useGlobalState } from "@/state/global-context";
 
 const WishlistPage = () => {
-  const context = useContext(GlobalContext);
+  const { wishlist } = useGlobalState();
 
   return (
     <Container maxWidth="md" sx={{ py: 4 }}>
@@ -15,7 +14,7 @@ const WishlistPage = () => {
         </Typography>
       </Grid>
 
-      {context.wishlist.length === 0 ? (
+      {wishlist.length === 0 ? (
         <Grid container direction="column" textAlign="center">
           <Grid>
             <Typography variant="body1">
@@ -30,7 +29,7 @@ const WishlistPage = () => {
         </Grid>
       ) : (
         <Grid container spacing={2}>
-          {context.wishlist.map((product) => (
+          {wishlist.map((product) => (
             <Grid size={{ xs: 6, md: 4 }} key={product.id}>
               <ProductCard product={product} />
             </Grid>

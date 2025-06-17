@@ -1,8 +1,8 @@
-import DefaultLayout from "../components/DefaultLayout";
+import DefaultLayout from "@/components/DefaultLayout";
 import { Button, Container, Grid, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import Link from "next/link";
-import BlissimBanner from "../components/blissimBanner/BlissimBanner";
+import BlissimBanner from "@/components/blissimBanner/BlissimBanner";
 
 const StyledContainer = styled(Container)(({ theme }) => ({
   marginTop: theme.spacing(5),

@@ -1,8 +1,8 @@
+import { useGlobalState } from "@/state/global-context";
 import ProductCard from "./ProductCard";
 import { Grid, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import { useContext, useState } from "react";
-import GlobalContext from "../../state/global-context";
+import { useState } from "react";
 
 const Title = styled(Typography)(({ theme }) => ({
   marginBottom: theme.spacing(2),
@@ -202,11 +202,11 @@ const getProducts = () => {
 
 const ProductList = () => {
   const [products] = useState(getProducts());
-  const context = useContext(GlobalContext);
+  const { cart } = useGlobalState();
 
   return (
     <>
-      <Title>Products in cart : {context.cart.length}</Title>
+      <Title>Products in cart : {cart.length}</Title>
       <Grid container spacing={2}>
         {products.map((product) => (
           <Grid size={{ xs: 6, md: 4 }} key={product.id}>

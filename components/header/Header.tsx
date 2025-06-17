@@ -1,4 +1,3 @@
-import { useContext } from "react";
 import Link from "next/link";
 import {
   AppBar,
@@ -6,14 +5,14 @@ import {
   Typography,
   IconButton,
   Container,
+  Badge,
 } from "@mui/material";
-import Badge from "@mui/material/Badge";
 import { styled } from "@mui/material/styles";
 import ShoppingBasketIcon from "@mui/icons-material/ShoppingBasket";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
-
-import Interstitial from "../Interstitial";
-import GlobalContext from "../../state/global-context";
+import { useGlobalState } from "@/state/global-context";
+import { KeyboardEvent, MouseEvent } from "react";
+import Interstitial from "@/components/Interstitial";
 
 const StyledToolbar = styled(Toolbar)({
   padding: 0,
@@ -22,26 +21,27 @@ const StyledToolbar = styled(Toolbar)({
 });
 
 const StyledShoppingBasketIcon = styled(ShoppingBasketIcon)(({ theme }) => ({
-  color: theme.palette.light,
+  color: theme.palette.common.white,
 }));
 
 const StyledFavoriteBorderIcon = styled(FavoriteBorderIcon)(({ theme }) => ({
-  color: theme.palette.light,
+  color: theme.palette.common.white,
 }));
 
 const Header = () => {
-  const context = useContext(GlobalContext);
+  const { open_interstitial, wishlist, pushObject } = useGlobalState();
 
-  const toggleDrawer = (open) => (event) => {
-    if (
-      event &&
-      event.type === "keydown" &&
-      (event.key === "Tab" || event.key === "Shift")
-    ) {
-      return;
-    }
-    context.pushObject("open_interstitial", true);
-  };
+  const toggleDrawer =
+    (open: boolean) => (event: KeyboardEvent | MouseEvent) => {
+      if (
+        event.type === "keydown" &&
+        ((event as KeyboardEvent).key === "Tab" ||
+          (event as KeyboardEvent).key === "Shift")
+      ) {
+        return;
+      }
+      pushObject("open_interstitial", open);
+    };
 
   return (
     <>
@@ -56,8 +56,8 @@ const Header = () => {
               </Link>
               <div>
                 <IconButton
-                  aria-label="shopping basket"
-                  onClick={toggleDrawer(!context.open_interstitial)}
+                  aria-label="Shopping cart"
+                  onClick={toggleDrawer(!open_interstitial)}
                   size="large"
                 >
                   <StyledShoppingBasketIcon />
@@ -68,7 +68,7 @@ const Header = () => {
                   aria-label="Wishlist"
                   sx={{ ml: 1 }}
                 >
-                  <Badge badgeContent={context.wishlist.length} color="error">
+                  <Badge badgeContent={wishlist.length} color="error" max={99}>
                     <StyledFavoriteBorderIcon />
                   </Badge>
                 </IconButton>

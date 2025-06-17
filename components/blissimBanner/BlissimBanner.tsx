@@ -1,6 +1,4 @@
 import React from "react";
-import Image from "next/image";
-import PropTypes from "prop-types";
 import {
   Box,
   Typography,
@@ -9,9 +7,24 @@ import {
   Container,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
+import Image from "next/image";
 
-const DEFAULT_FEATURES = [
+interface Feature {
+  id: string | number;
+  title: React.ReactNode;
+  content: React.ReactNode;
+}
+
+interface BlissimBannerProps {
+  features?: Feature[];
+  imageUrl?: string;
+  imageAlt?: string;
+}
+
+//As most of the content on the site is customizable by teams and comes from a back office.
+const DEFAULT_FEATURES: Feature[] = [
   {
+    id: 1,
     title: <>Un accompagnement sur-mesure</>,
     content: (
       <>
@@ -23,6 +36,7 @@ const DEFAULT_FEATURES = [
     ),
   },
   {
+    id: 2,
     title: <>10 ans d&apos;expertise beauté</>,
     content: (
       <>
@@ -35,6 +49,7 @@ const DEFAULT_FEATURES = [
     ),
   },
   {
+    id: 3,
     title: <>Nos engagements</>,
     content: (
       <>
@@ -48,13 +63,15 @@ const DEFAULT_FEATURES = [
 ];
 
 const OuterContainer = styled(Container)(({ theme }) => ({
+  width: "100%",
   display: "flex",
+  justifyContent: "center",
   padding: theme.spacing(2),
 }));
 
 const ContentWrapper = styled(Box)(({ theme }) => ({
   backgroundColor: theme.palette.background.paper,
-  borderRadius: theme.shape.borderRadius * 2,
+  borderRadius: theme.shape.borderRadius,
   boxShadow: theme.shadows[1],
   display: "flex",
   flexDirection: "column",
@@ -63,6 +80,7 @@ const ContentWrapper = styled(Box)(({ theme }) => ({
   "&:hover": {
     boxShadow: theme.shadows[3],
   },
+  width: "100%",
   [theme.breakpoints.up("md")]: {
     flexDirection: "row",
   },
@@ -71,7 +89,9 @@ const ContentWrapper = styled(Box)(({ theme }) => ({
 const ImageContainer = styled(Box)(({ theme }) => ({
   flexShrink: 0,
   display: "flex",
+  justifyContent: "center",
   [theme.breakpoints.up("md")]: {
+    alignItems: "center",
     width: "45%",
   },
 }));
@@ -80,15 +100,12 @@ const StyledImage = styled(Box)(({ theme }) => ({
   position: "relative",
   width: "100%",
   height: "100%",
-  borderRadius: `${theme.shape.borderRadius * 2}px ${
-    theme.shape.borderRadius * 2
-  }px 0 0`,
+  borderRadius: `${theme.shape.borderRadius}px ${theme.shape.borderRadius}px 0 0`,
   overflow: "hidden",
   boxShadow: "0px 2px 8px rgba(0,0,0,0.07)",
   [theme.breakpoints.up("md")]: {
-    borderRadius: `${theme.shape.borderRadius * 2}px 0 0 ${
-      theme.shape.borderRadius * 2
-    }px`,
+    borderRadius: `${theme.shape.borderRadius}px 0 0 ${theme.shape.borderRadius}px`,
+    height: "100%",
   },
 }));
 
@@ -105,12 +122,11 @@ const TextContentContainer = styled(Box)(({ theme }) => ({
 const FeatureItem = styled(Box)(({ theme }) => ({
   display: "flex",
   flexDirection: "column",
-  alignItems: "flex-start",
+  textAlign: "left",
   gap: theme.spacing(1),
   marginBottom: theme.spacing(3),
   [theme.breakpoints.up("md")]: {
     flexDirection: "row",
-    alignItems: "center",
     gap: theme.spacing(2),
   },
 }));
@@ -121,7 +137,6 @@ const IconWrapper = styled(Box)(({ theme }) => ({
   padding: theme.spacing(1),
   display: "inline-flex",
   alignItems: "center",
-  justifyContent: "center",
   [theme.breakpoints.up("md")]: {
     marginTop: theme.spacing(0.5),
   },
@@ -134,9 +149,9 @@ const FeatureContent = styled(Box)({
 const FeatureTitle = styled(Typography)(({ theme }) => ({
   fontWeight: 600,
   lineHeight: 1.25,
-  fontSize: "1.25rem",
+  fontSize: "1.55rem",
   [theme.breakpoints.up("md")]: {
-    fontSize: "1.5rem",
+    fontSize: "1.425rem",
   },
 }));
 
@@ -150,7 +165,7 @@ const BlissimBanner = ({
   features = DEFAULT_FEATURES,
   imageUrl = "/static/images/homepage-box-image.jpg",
   imageAlt = "Coffret Blissim",
-}) => {
+}: BlissimBannerProps) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
@@ -176,7 +191,7 @@ const BlissimBanner = ({
 
         <TextContentContainer>
           {features.map((item, i) => (
-            <FeatureItem key={i}>
+            <FeatureItem key={item.id}>
               <IconWrapper aria-hidden="true">
                 <svg
                   width="57"
@@ -206,7 +221,7 @@ const BlissimBanner = ({
                 </svg>
               </IconWrapper>
               <FeatureContent>
-                <FeatureTitle component="h3" gutterBottom>
+                <FeatureTitle variant="h3" gutterBottom>
                   {item.title}
                 </FeatureTitle>
                 <FeatureText variant="body2">{item.content}</FeatureText>
@@ -219,12 +234,4 @@ const BlissimBanner = ({
   );
 };
 
-BlissimBanner.propTypes = {
-  features: PropTypes.arrayOf({
-    tile: PropTypes.string,
-    content: PropTypes.string,
-  }),
-  imageUrl: PropTypes.string,
-  imageAlt: PropTypes.string,
-};
 export default BlissimBanner;

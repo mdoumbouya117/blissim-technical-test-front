@@ -8,10 +8,10 @@ import {
   CardMedia,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import { useContext, useEffect, useState } from "react";
-import GlobalContext from "../state/global-context";
+import { useEffect, useState } from "react";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import DeleteIcon from "@mui/icons-material/Delete";
+import { useGlobalState } from "@/state/global-context";
 
 const InterstitialRoot = styled("div")(({ theme }) => ({
   width: "350px",
@@ -43,16 +43,17 @@ const DeleteButton = styled(IconButton)({
 });
 
 const Interstitial = () => {
-  const context = useContext(GlobalContext);
-  const cart = context.cart;
+  const { cart, removeProductToCart, open_interstitial, pushObject } =
+    useGlobalState();
+
   const [totalPrice, setTotalPrice] = useState(0);
 
   useEffect(() => {
     getTotalPrice();
-  });
+  }, []);
 
-  const handleRemoveProduct = (id) => {
-    context.removeProductToCart(id);
+  const handleRemoveProduct = (id: string | number) => {
+    removeProductToCart(id);
   };
 
   const getTotalPrice = () => {
@@ -60,22 +61,22 @@ const Interstitial = () => {
     cart.forEach((p) => {
       total += p.price;
     });
-    setTotalPrice(total);
+    setTotalPrice(Number(total.toFixed(2)));
   };
 
   return (
     <SwipeableDrawer
       anchor={"right"}
-      open={context.open_interstitial}
-      onClose={() => context.pushObject("open_interstitial", false)}
-      onOpen={() => context.pushObject("open_interstitial", false)}
+      open={open_interstitial}
+      onClose={() => pushObject("open_interstitial", false)}
+      onOpen={() => pushObject("open_interstitial", false)}
     >
       <InterstitialRoot>
         <ProductListContainer container alignItems="center">
           <Grid>
             <IconButton
               aria-label="back"
-              onClick={() => context.pushObject("open_interstitial", false)}
+              onClick={() => pushObject("open_interstitial", false)}
               size="large"
             >
               <ArrowBackIcon color="secondary" />
@@ -89,24 +90,19 @@ const Interstitial = () => {
         <ProductListContainer container spacing={2}>
           <Grid size={{ xs: 12 }}>
             <Typography>
-              {context.cart.length > 1
-                ? `${context.cart.length} produits`
-                : `${context.cart.length} produit`}
+              {cart.length > 1
+                ? `${cart.length} produits`
+                : `${cart.length} produit`}
             </Typography>
           </Grid>
 
           {cart.map((product) => (
             <Grid size={{ xs: 12 }} key={product.id}>
               <ProductItem>
-                <ProductItemImg
-                  component="img"
-                  alt={product.title}
-                  image={product.image}
-                  title="Contemplative Reptile"
-                />
+                <ProductItemImg image={product.image} title={product.title} />
                 <div>
                   <Typography>{product.title}</Typography>
-                  <Typography>{product.price}euros</Typography>
+                  <Typography>{product.price} €</Typography>
                   <DeleteButton
                     onClick={() => handleRemoveProduct(product.id)}
                     size="large"
@@ -119,9 +115,7 @@ const Interstitial = () => {
           ))}
         </ProductListContainer>
 
-        <Typography gutterBottom>
-          Prix total : {totalPrice} {totalPrice > 1 ? "euros" : "euro"}
-        </Typography>
+        <Typography gutterBottom>Prix total : {totalPrice} €</Typography>
         <Button color="primary" variant="contained">
           Commander
         </Button>

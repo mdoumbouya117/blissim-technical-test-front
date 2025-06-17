@@ -1,4 +1,4 @@
-import DefaultLayout from "../../components/DefaultLayout";
+import DefaultLayout from "@/components/DefaultLayout";
 import {
   Container,
   Grid,
@@ -8,7 +8,7 @@ import {
   ListItemText,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import ProductsList from "../../components/boutique/ProductsList";
+import ProductsList from "@/components/boutique/ProductsList";
 
 const RootContainer = styled(Container)(({ theme }) => ({
   marginBottom: theme.spacing(3),
@@ -19,8 +19,8 @@ const PageTitle = styled(Typography)(({ theme }) => ({
 }));
 
 const FilterTitle = styled(Typography)(({ theme }) => ({
-  backgroundColor: theme.palette.primary,
   color: theme.palette.primary.main,
+  fontSize: "1.55rem",
 }));
 
 const FilterListItem = styled(ListItem)({
@@ -33,15 +33,13 @@ const Boutique = () => {
       <RootContainer maxWidth="lg">
         <Grid container justifyContent={"center"}>
           <Grid>
-            <PageTitle variant="h3" component="h1">
-              SuperShop
-            </PageTitle>
+            <PageTitle variant="h2">SuperShop</PageTitle>
           </Grid>
         </Grid>
 
         <Grid container>
           <Grid size={{ xs: 12, md: 3 }}>
-            <FilterTitle variant="h6">Catégories</FilterTitle>
+            <FilterTitle variant="h3">Catégories</FilterTitle>
             <div>
               <List>
                 <FilterListItem>

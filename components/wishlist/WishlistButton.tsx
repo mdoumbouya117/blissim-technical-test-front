@@ -1,19 +1,15 @@
 import { IconButton, Tooltip } from "@mui/material";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
-import { memo, useContext } from "react";
-import GlobalContext from "../../state/global-context";
+import { useGlobalState } from "@/state/global-context";
+import { Product } from "@/types";
 
-const WishlistButton = memo(({ product }) => {
-  const context = useContext(GlobalContext);
-  const isInWishlist = context.wishlist.some((item) => item.id === product.id);
+const WishlistButton = ({ product }: { product: Product }) => {
+  const { wishlist, addToWishlist, removeFromWishlist } = useGlobalState();
+  const isInWishlist = wishlist.some((item) => item.id === product.id);
 
   const handleClick = () => {
-    if (isInWishlist) {
-      context.removeFromWishlist(product.id);
-    } else {
-      context.addToWishlist(product);
-    }
+    isInWishlist ? removeFromWishlist(product.id) : addToWishlist(product);
   };
 
   return (
@@ -21,12 +17,12 @@ const WishlistButton = memo(({ product }) => {
       <IconButton
         onClick={handleClick}
         color={isInWishlist ? "secondary" : "default"}
-        aria-label="wishlist"
+        aria-label={isInWishlist ? "Remove from wishlist" : "Add to wishlist"}
       >
         {isInWishlist ? <FavoriteIcon /> : <FavoriteBorderIcon />}
       </IconButton>
     </Tooltip>
   );
-});
+};
 
 export default WishlistButton;
