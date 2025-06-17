@@ -1,8 +1,30 @@
 import { useGlobalState } from "@/state/global-context";
 import ProductCard from "./ProductCard";
-import { Grid, Typography } from "@mui/material";
+import {
+  Grid,
+  Typography,
+  Pagination,
+  CircularProgress,
+  List,
+  ListItem,
+  FormControlLabel,
+  Checkbox,
+  Box,
+} from "@mui/material";
 import { styled } from "@mui/material/styles";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { Product } from "@/types";
+
+const ITEMS_PER_PAGE = 6;
+
+const FilterTitle = styled(Typography)(({ theme }) => ({
+  color: theme.palette.primary.main,
+  fontSize: "1.55rem",
+}));
+
+const FilterListItem = styled(ListItem)({
+  paddingLeft: 0,
+});
 
 const Title = styled(Typography)(({ theme }) => ({
   marginBottom: theme.spacing(2),
@@ -22,7 +44,7 @@ const getProducts = () => {
     },
     {
       id: 2,
-      title: "Mens Casual Premium Slim Fit T-Shirts ",
+      title: "Mens Casual Premium Slim Fit T-Shirts",
       price: 22.3,
       description:
         "Slim-fitting style, contrast raglan long sleeve, three-button henley placket, light weight & soft fabric for breathable and comfortable wearing. And Solid stitched shirts with round neck made for durability and a great fit for casual fashion wear and diehard baseball fans. The Henley style round neckline includes a three-button placket.",
@@ -60,7 +82,7 @@ const getProducts = () => {
     },
     {
       id: 6,
-      title: "Solid Gold Petite Micropave ",
+      title: "Solid Gold Petite Micropave",
       price: 168,
       description:
         "Satisfaction Guaranteed. Return or exchange any order within 30 days.Designed and sold by Hafeez Center in the United States. Satisfaction Guaranteed. Return or exchange any order within 30 days.",
@@ -87,7 +109,7 @@ const getProducts = () => {
     },
     {
       id: 9,
-      title: "WD 2TB Elements Portable External Hard Drive - USB 3.0 ",
+      title: "WD 2TB Elements Portable External Hard Drive - USB 3.0",
       price: 64,
       description:
         "USB 3.0 and USB 2.0 Compatibility Fast data transfers Improve PC Performance High Capacity; Compatibility Formatted NTFS for Windows 10, Windows 8.1, Windows 7; Reformatting may be required for other operating systems; Compatibility may vary depending on user’s hardware configuration and operating system",
@@ -135,7 +157,7 @@ const getProducts = () => {
     {
       id: 14,
       title:
-        "Samsung 49-Inch CHG90 144Hz Curved Gaming Monitor (LC49HG90DMNXZA) – Super Ultrawide Screen QLED ",
+        "Samsung 49-Inch CHG90 144Hz Curved Gaming Monitor (LC49HG90DMNXZA) – Super Ultrawide Screen QLED",
       price: 999.99,
       description:
         "49 INCH SUPER ULTRAWIDE 32:9 CURVED GAMING MONITOR with dual 27 inch screen side by side QUANTUM DOT (QLED) TECHNOLOGY, HDR support and factory calibration provides stunningly realistic and accurate color and contrast 144HZ HIGH REFRESH RATE and 1ms ultra fast response time work to eliminate motion blur, ghosting, and reduce input lag",
@@ -172,7 +194,7 @@ const getProducts = () => {
     },
     {
       id: 18,
-      title: "MBJ Women's Solid Short Sleeve Boat Neck V ",
+      title: "MBJ Women's Solid Short Sleeve Boat Neck V",
       price: 9.85,
       description:
         "95% RAYON 5% SPANDEX, Made in USA or Imported, Do Not Bleach, Lightweight fabric with great stretch for comfort, Ribbed on sleeves and neckline / Double stitching on bottom hem",
@@ -201,18 +223,120 @@ const getProducts = () => {
 };
 
 const ProductList = () => {
-  const [products] = useState(getProducts());
+  const [allProducts, setAllProducts] = useState<Product[]>([]);
+  const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
+  const [displayedProducts, setDisplayedProducts] = useState<Product[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [totalProducts, setTotalProducts] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const { cart } = useGlobalState();
+
+  const categories = Array.from(
+    new Set(allProducts.map((product) => product.category))
+  );
+
+  const updateDisplayedProducts = (products: Product[], page: number) => {
+    const startIndex = (page - 1) * ITEMS_PER_PAGE;
+    const paginatedProducts = products.slice(
+      startIndex,
+      startIndex + ITEMS_PER_PAGE
+    );
+    setDisplayedProducts(paginatedProducts);
+  };
+
+  const fetchProducts = async () => {
+    try {
+      const products = getProducts();
+      setAllProducts(products);
+      setFilteredProducts(products);
+      setTotalProducts(products.length);
+      updateDisplayedProducts(products, currentPage);
+    } catch (error) {
+      console.error("Failed to fetch products:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleCategoryChange = (category: string) => {
+    const newSelectedCategories = selectedCategories.includes(category)
+      ? selectedCategories.filter((c) => c !== category)
+      : [...selectedCategories, category];
+
+    setSelectedCategories(newSelectedCategories);
+
+    if (newSelectedCategories.length === 0) {
+      setFilteredProducts(allProducts);
+      setTotalProducts(allProducts.length);
+      updateDisplayedProducts(allProducts, 1);
+      setCurrentPage(1);
+    } else {
+      const filtered = allProducts.filter((product) =>
+        newSelectedCategories.includes(product.category)
+      );
+      setFilteredProducts(filtered);
+      setTotalProducts(filtered.length);
+      updateDisplayedProducts(filtered, 1);
+      setCurrentPage(1);
+    }
+  };
+
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+
+  useEffect(() => {
+    updateDisplayedProducts(filteredProducts, currentPage);
+  }, [currentPage, filteredProducts]);
+
+  const pageCount = Math.ceil(totalProducts / ITEMS_PER_PAGE);
+
+  if (isLoading) {
+    return (
+      <Box display="flex" mt={4}>
+        <CircularProgress />
+      </Box>
+    );
+  }
 
   return (
     <>
-      <Title>Products in cart : {cart.length}</Title>
-      <Grid container spacing={2}>
-        {products.map((product) => (
-          <Grid size={{ xs: 6, md: 4 }} key={product.id}>
-            <ProductCard product={product} />
-          </Grid>
-        ))}
+      <Grid size={{ xs: 12, md: 3 }}>
+        <FilterTitle variant="h3">Categories</FilterTitle>
+        <List>
+          {categories.map((category) => (
+            <FilterListItem key={category}>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={selectedCategories.includes(category)}
+                    onChange={() => handleCategoryChange(category)}
+                  />
+                }
+                label={category}
+              />
+            </FilterListItem>
+          ))}
+        </List>
+      </Grid>
+      <Grid size={{ xs: 12, md: 9 }}>
+        <Title>Products in cart : {cart.length}</Title>
+        <Grid container spacing={2}>
+          {displayedProducts.map((product) => (
+            <Grid size={{ xs: 6, md: 4 }} key={product.id}>
+              <ProductCard product={product} />
+            </Grid>
+          ))}
+        </Grid>
+        {pageCount > 1 && (
+          <Pagination
+            count={pageCount}
+            page={currentPage}
+            onChange={(_, page) => setCurrentPage(page)}
+            sx={{ mt: 3, display: "flex", justifyContent: "center" }}
+          />
+        )}
       </Grid>
     </>
   );

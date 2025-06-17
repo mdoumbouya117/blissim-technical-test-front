@@ -29,7 +29,7 @@ const StyledFavoriteBorderIcon = styled(FavoriteBorderIcon)(({ theme }) => ({
 }));
 
 const Header = () => {
-  const { open_interstitial, wishlist, pushObject } = useGlobalState();
+  const { open_interstitial, cart, wishlist, pushObject } = useGlobalState();
 
   const toggleDrawer =
     (open: boolean) => (event: KeyboardEvent | MouseEvent) => {
@@ -60,7 +60,9 @@ const Header = () => {
                   onClick={toggleDrawer(!open_interstitial)}
                   size="large"
                 >
-                  <StyledShoppingBasketIcon />
+                  <Badge badgeContent={cart.length} color="error" max={99}>
+                    <StyledShoppingBasketIcon />
+                  </Badge>
                 </IconButton>
                 <IconButton
                   component={Link}

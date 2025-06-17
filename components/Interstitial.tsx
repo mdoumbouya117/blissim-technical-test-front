@@ -96,8 +96,8 @@ const Interstitial = () => {
             </Typography>
           </Grid>
 
-          {cart.map((product) => (
-            <Grid size={{ xs: 12 }} key={product.id}>
+          {cart.map((product, index) => (
+            <Grid size={{ xs: 12 }} key={`${product.id}_${index}`}>
               <ProductItem>
                 <ProductItemImg image={product.image} title={product.title} />
                 <div>
