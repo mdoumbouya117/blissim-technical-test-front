@@ -50,7 +50,7 @@ const Interstitial = () => {
 
   useEffect(() => {
     getTotalPrice();
-  }, []);
+  }, [cart]);
 
   const handleRemoveProduct = (id: string | number) => {
     removeProductToCart(id);
@@ -115,10 +115,14 @@ const Interstitial = () => {
           ))}
         </ProductListContainer>
 
-        <Typography gutterBottom>Prix total : {totalPrice} €</Typography>
-        <Button color="primary" variant="contained">
-          Commander
-        </Button>
+        {cart.length > 0 && (
+          <>
+            <Typography gutterBottom>Prix total : {totalPrice} €</Typography>
+            <Button color="primary" variant="contained">
+              Commander
+            </Button>
+          </>
+        )}
       </InterstitialRoot>
     </SwipeableDrawer>
   );
